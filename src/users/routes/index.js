@@ -15,6 +15,8 @@ module.exports.getOne.verb = 'get'
 module.exports.getOne.path = '/:username'
 
 module.exports.postUser = promisify(async (req, res) => {
+    console.log("esto es el body")
+    console.log(req.body)
     return createUser(req, res)
 })
 module.exports.postUser.verb = 'post'

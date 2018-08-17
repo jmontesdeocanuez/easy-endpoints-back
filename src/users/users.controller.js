@@ -37,11 +37,36 @@ function createUser(req, res) {
 }
 
 function updateUser(req, res) {
-    return res.status(500).send('Not implemented yet')
+     const userToUpdate = USER.findOne({username: req.params.username}, (err, doc) => {
+        if(userToUpdate){
+            doc.username = req.body.username;
+            doc.password = req.body.password;
+            doc.email = req.body.email;
+            doc.name = req.body.name;
+            doc.save()
+            .then(response => {
+                return res.json(response)
+            })
+            .catch(response => {
+                console.log(response)
+                return res.status(400).send('User was not update')
+            })
+        }else{
+            return res.status(400).send("There’s no user with username="+req.params.username);
+        }
+    })
 }
 
 function removeUser(req, res) {
-    return res.status(500).send('Not implemented yet')
+    USER.findOne({username: req.params.username}, (err, doc) => {
+        if(doc){
+            doc.remove();
+            return res.json(doc);
+        }else{
+            return res.status(400).send("There’s no user with username="+req.params.username);
+        }
+    })
 }
+
 
 module.exports = { getAllUsers, getOneUser, createUser, updateUser, removeUser }
