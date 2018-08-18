@@ -13,10 +13,10 @@ module.exports.postResource = promisify(async (req, res) => {
                         return palabraAnterior + "," + palabraActual.name;
                     }
                 },{});
-                res.send("ok")
                 console.log(fields);
                 const resource = req.body.resource.name;
                 createNewResource(username,resource,fields);
+                res.send("Resource was created succesfully")
             }else{
                 return res.status(400).send("There’s no user with username="+req.params.username);
             }
