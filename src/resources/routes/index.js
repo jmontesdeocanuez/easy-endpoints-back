@@ -1,26 +1,32 @@
 const { promisify } = require('../../services/router')
-const { createNewResource } = require('../../yeoman');
-const USER = require('../../users/users.model');
+const { getAllResources, getOneResource, postResource, updateResource, removeResource } = require('../resources.controller')
+
+module.exports.getAll = promisify(async (req, res) => {
+    return getAllResources(req, res)
+})
+module.exports.getAll.verb = 'get'
+module.exports.getAll.path = '/'
+
+module.exports.getOne = promisify(async (req, res) => {
+    return getOneResource(req, res)
+})
+module.exports.getOne.verb = 'get'
+module.exports.getOne.path = '/:name'
 
 module.exports.postResource = promisify(async (req, res) => {
-        USER.findOne({username: req.body.username}, (err, doc) => {
-            if(doc){
-                const username = req.body.username;
-                const fields = req.body.resource.params.reduce(function(palabraAnterior, palabraActual, index){
-                    if(index === 0){
-                        return palabraActual.name;
-                    }else{
-                        return palabraAnterior + "," + palabraActual.name;
-                    }
-                },{});
-                console.log(fields);
-                const resource = req.body.resource.name;
-                createNewResource(username,resource,fields);
-                res.send("Resource was created succesfully")
-            }else{
-                return res.status(400).send("There’s no user with username="+req.params.username);
-            }
-        })    
+    return postResource(req, res)
 })
 module.exports.postResource.verb = 'post'
 module.exports.postResource.path = '/'
+
+module.exports.updateResource = promisify(async (req, res) => {
+    return updateResource(req, res)
+})
+module.exports.updateResource.verb = 'put'
+module.exports.updateResource.path = '/:name'
+
+module.exports.removeResource = promisify(async (req, res) => {
+    return removeResource(req, res)
+})
+module.exports.removeResource.verb = 'delete'
+module.exports.removeResource.path = '/:name'

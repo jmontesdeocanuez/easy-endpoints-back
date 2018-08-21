@@ -1,20 +1,15 @@
 const mongoose = require ('mongoose');
 const RESOURCEschema = mongoose.Schema({
-    username: {
+    name: {
         type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
+        unique: true,
         required: true
     },
-    email:{
-        type: String,
-        required: true,
-    },
-    name: String
+    params: [{
+        name: String,
+        types: String
+    }]
 })
 
-const USER = mongoose.model('resource', RESOURCEschema);
-module.exports = USER;
+const resources = mongoose.model('resource', RESOURCEschema);
+module.exports = resources;
