@@ -1,6 +1,5 @@
 const resources = require('./resources.model');
 const { createNewResource } = require('../yeoman');
-const USER = require("../users/users.model")
 
 
 function getAllResources(req, res) {
@@ -54,8 +53,8 @@ function postResource (req, res){
 }
 
 function updateResource(req, res) {
-     const resourceToUpate = resources.findOne({username: req.params.username}, (err, doc) => {
-        if(resourceToUpate){
+     resources.findOne({name: req.params.name}, (err, doc) => {
+        if(doc){
             doc.name = req.body.name;
             doc.params = req.body.params
             doc.save()
@@ -64,7 +63,7 @@ function updateResource(req, res) {
             })
             .catch(response => {
                 console.log(response)
-                return res.status(400).send('User was not update')
+                return res.status(400).send('Resource was not update')
             })
         }else{
             return res.status(400).send("There’s no resource with the name="+req.params.name);
