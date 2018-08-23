@@ -23,24 +23,7 @@ function getOneUser(req, res) {
 }
 
 function createUser(req, res) {
-    //console.log(USER.findOne({"username": req.body.email}));
-
-    USER.findOne({"username" : req.body.username}, (err, user) => {
-        if(err) return res.status(500).send(err);
-        if(user != null){
-            const token =  jwt.sign(
-                { 
-                    username: user.username,
-                    exp: Date.now()/1000+30 
-                }, 
-                '1234',
-    
-            )
-            return res.status(200).json(token);
-        } 
-
-    })
-    /* if (req.body) {
+    if (req.body) {
         const newUser = new USER({
             username: req.body.username,
             password: md5(req.body.password),
@@ -76,7 +59,7 @@ function createUser(req, res) {
             })
     } else {
         return res.status(400).send('User was not created')
-    } */
+    }
 }
 
 
