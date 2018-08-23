@@ -1,4 +1,5 @@
 const USER = require('./users.model');
+const assert = require('assert')
 
 function getAllUsers(req, res) {
     USER.find()
@@ -14,13 +15,12 @@ function getOneUser(req, res) {
             if (response) {
                 res.json(response)
             } else {
-                res.status(400).send("There's no user with username=" + _username)
+                res.status(404).send("There's no user with username=" + _username)
             }
         })
 }
 
 function createUser(req, res) {
-    console.log(req.body)
     if (req.body) {
         const newUser = new USER(req.body);
         newUser.save()
@@ -28,42 +28,81 @@ function createUser(req, res) {
                 return res.json(response)
             })
             .catch(response => {
-                console.log(response)
-                return res.status(400).send('User was not createdd')
+                const objErrors = Object.keys(response.errors)
+                let errores = [];  
+                for (let i = 0; i < objErrors.length; i++) { 
+                    console.log(objErrors[i]);      
+                switch (objErrors[i]) {
+                    case  "email" :
+                        errores.push("Introduzca un email");
+                        break;
+                    case  "username" :
+                        if (response.errors.username.kind === "unique") {
+                           errores.push("El nombre de usuario ya está en uso.");
+                        } else {
+                            errores.push("Introduzca un nombre de usuario.");
+                        }
+                        break;
+                    case "password":
+                            errores.push("Introduzca una contraseña");
+                        break;
+                }
+            }
+            return res.status(400).send(errores);
             })
     } else {
         return res.status(400).send('User was not created')
     }
 }
 
+
 function updateUser(req, res) {
-     const userToUpdate = USER.findOne({username: req.params.username}, (err, doc) => {
-        if(userToUpdate){
+    const userToUpdate = USER.findOne({ username: req.params.username }, (err, doc) => {
+        if (userToUpdate) {
             doc.username = req.body.username;
             doc.password = req.body.password;
             doc.email = req.body.email;
             doc.name = req.body.name;
             doc.save()
-            .then(response => {
-                return res.json(response)
+                .then(response => {
+                    return res.json(response)
+                })
+                .catch(response => {
+                    const objErrors = Object.keys(response.errors)
+                let errores = [];  
+                console.log(objErrors);  
+                for (let i = 0; i < objErrors.length; i++) {  
+                switch (objErrors[i]) {
+                    case "username" :
+                    if (response.errors.username.kind === "unique") {
+                        errores.push("El nombre de usuario ya está en uso.");
+                     } else {
+                         errores.push("Introduzca un nombre de usuario.");
+                     }
+                     break;
+                    case  "email" :
+                        errores.push("Introduzca un email");
+                        break;
+                    case "password":
+                            errores.push("Introduzca una contraseña");
+                        break;
+                }
+            }
+            return res.status(400).send(errores);
             })
-            .catch(response => {
-                console.log(response)
-                return res.status(400).send('User was not update')
-            })
-        }else{
-            return res.status(400).send("There’s no user with username="+req.params.username);
+        } else {
+            return res.status(400).send("There’s no user with username=" + req.params.username);
         }
     })
 }
 
 function removeUser(req, res) {
-    USER.findOne({username: req.params.username}, (err, doc) => {
-        if(doc){
+    USER.findOne({ username: req.params.username }, (err, doc) => {
+        if (doc) {
             doc.remove();
             return res.json(doc);
-        }else{
-            return res.status(400).send("There’s no user with username="+req.params.username);
+        } else {
+            return res.status(400).send("There’s no user with username=" + req.params.username);
         }
     })
 }
