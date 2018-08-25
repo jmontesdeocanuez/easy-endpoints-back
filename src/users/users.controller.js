@@ -1,5 +1,6 @@
 const USER = require('./users.model');
 const assert = require('assert')
+const md5 = require('md5');
 
 function getAllUsers(req, res) {
     USER.find()
@@ -22,7 +23,12 @@ function getOneUser(req, res) {
 
 function createUser(req, res) {
     if (req.body) {
-        const newUser = new USER(req.body);
+        const newUser = new USER({
+            username: req.body.username,
+            password: md5(req.body.password),
+            email: req.body.email,
+            name: req.body.name
+        });
         newUser.save()
             .then(response => {
                 return res.json(response)
