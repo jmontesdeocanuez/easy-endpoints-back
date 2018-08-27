@@ -1,6 +1,8 @@
 const USER = require('./users.model');
 const assert = require('assert')
 const md5 = require('md5');
+const moment = require('moment')
+const jwt = require('jsonwebtoken');
 
 function getAllUsers(req, res) {
     USER.find()
@@ -21,6 +23,8 @@ function getOneUser(req, res) {
         })
 }
 
+
+
 function createUser(req, res) {
     if (req.body) {
         const newUser = new USER({
@@ -31,7 +35,16 @@ function createUser(req, res) {
         });
         newUser.save()
             .then(response => {
-                return res.json(response)
+                console.log("This is response" + response);
+                const token =  jwt.sign(
+                    { 
+                        username: newUser.username,
+                        exp: moment().add(14, 'days').unix() 
+                    }, 
+                    '1234',
+        
+                )
+                return res.status(200).json(token);
             })
             .catch(response => {
                 const objErrors = Object.keys(response.errors)
