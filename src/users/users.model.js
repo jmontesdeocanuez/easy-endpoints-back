@@ -15,7 +15,8 @@ const USERschema = mongoose.Schema({
         type: String,
         required: true,
     },
-    name: String
+    name: String,
+    backend: String
 })
 USERschema.plugin(uniqueValidator);
 const USER = mongoose.model('user', USERschema);

@@ -32,7 +32,10 @@ function createUser(req, res) {
             password: md5(req.body.password),
             email: req.body.email,
             name: req.body.name
-        });
+        });/*
+        LEVANTAR UN EC2 PAL COLEGA
+        newUser.backend = IP de su EC2
+        */
         newUser.save()
             .then(response => {
                 console.log("This is response" + response);
