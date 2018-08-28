@@ -3,6 +3,7 @@ const assert = require('assert')
 const md5 = require('md5');
 const moment = require('moment')
 const jwt = require('jsonwebtoken');
+const { createInstance } = require('../aws/index')
 
 function getAllUsers(req, res) {
     USER.find()
@@ -25,17 +26,22 @@ function getOneUser(req, res) {
 
 
 
-function createUser(req, res) {
+async function createUser(req, res) {
     if (req.body) {
+        const ip = await createInstance()
+
         const newUser = new USER({
             username: req.body.username,
             password: md5(req.body.password),
             email: req.body.email,
-            name: req.body.name
+            name: req.body.name,
+            backend: ip
         });/*
         LEVANTAR UN EC2 PAL COLEGA
         newUser.backend = IP de su EC2
         */
+
+        
         newUser.save()
             .then(response => {
                 console.log("This is response" + response);
