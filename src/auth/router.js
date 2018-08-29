@@ -18,7 +18,9 @@ module.exports.login = promisify(async (req, res) => {
     
             )
             return res.status(200).json(token);
-        } 
+        } else {
+            return res.status(400).send("user or password incorrect");
+        }
 
     })
   })
