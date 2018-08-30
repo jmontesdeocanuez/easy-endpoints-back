@@ -8,7 +8,7 @@ const users = require('./users')
 
 
 const PORT = 4000;
-const DB_URL = 'mongodb://localhost:27017/ee-users'
+const DB_URL = 'mongodb://mongodb:27017/ee-users'
 
 mongoose.connect(DB_URL)
 const app = express();
